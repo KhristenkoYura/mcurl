@@ -297,7 +297,12 @@ class Client {
      */
     public function next() {
         while($this->run() && empty($this->results)) {}
-        return array_shift( $this->results );
+        if (!empty($this->results)) {
+            list($key, $result) = each($this->results);
+            unset($this->results[$key]);
+            return $result;
+        }
+        return null;
     }
 
     /**
