@@ -15,18 +15,15 @@ class QueryTest extends CaseTest {
         );
 
         foreach($urls AS $url) {
-            $this->req->addQuery(array(
+            $this->req->add(array(
                 CURLOPT_URL => $url
             ));
         }
 
-        while ($this->req->hasResults()) {
-            $results = $this->req->getResults();
-            foreach($results AS $result) {
-                $i++;
-                $this->assertEquals(200, $result->getHttpCode());
-                $this->assertNotEmpty($result->getBody());
-            }
+        while ($result = $this->req->next()) {
+            $i++;
+            $this->assertEquals(200, $result->getHttpCode());
+            $this->assertNotEmpty($result->getBody());
         }
 
         $this->assertEquals(count($urls), $i);
@@ -40,45 +37,43 @@ class QueryTest extends CaseTest {
             $this->url('/simple-3.txt'),
         );
 
+        foreach($urls AS $url) {
+            $this->req->add(array(
+                CURLOPT_URL => $url
+            ));
+        }
+
         do{
-            if (!empty($urls)) {
-                $this->req->addQuery(array(
-                    CURLOPT_URL => array_pop($urls)
-                ));
-
-                $this->req->run();
-            }
-
-            $results = $this->req->getResults();
-            foreach($results AS $result) {
+            while($this->req->has()) {
+                $result = $this->req->next();
                 $this->assertEquals(200, $result->getHttpCode());
                 $this->assertNotEmpty($result->getBody());
             }
-
-        }while($this->req->hasResults() || !empty($urls));
+        }while($this->req->run());
     }
 
     public function testSpider() {
         $this->req->setMaxRequest(10);
 
-        $this->req->addQuery(array(
+        $this->req->add(array(
             CURLOPT_URL => $this->url('/simple-1.txt'),
         ));
 
-        $this->req->addQuery(array(
+        $this->req->add(array(
             CURLOPT_URL => $this->url('/simple-2.txt'),
         ));
 
-        while($this->req->hasResults()) {
-            $results = $this->req->getResults();
-            foreach($results AS $result) {
+        while($this->req->run() || $this->req->has()) {
+            while($this->req->has()) {
+                $result = $this->req->next();
+
                 $num = (int) substr($result->getBody(), -1, 1);
                 if ($num > 4) {
                     continue;
                 }
 
                 for($i=0; $i<pow($num, 2);$i++) {
-                    $this->req->addQuery(array(
+                    $this->req->add(array(
                         CURLOPT_URL => $this->url('/simple-'.($num+1).'.txt'),
                     ));
                 }
@@ -88,6 +83,4 @@ class QueryTest extends CaseTest {
             }
         }
     }
-
-
 }

@@ -101,6 +101,8 @@ class Client {
      */
     protected $streamResult = self::STREAM_MEMORY;
 
+    protected $enableHeaders = false;
+
     /**
      * @see http://php.net/manual/ru/stream.filters.php
      * @var array
@@ -125,10 +127,9 @@ class Client {
         $urls = (array) $url;
         foreach ($urls AS $id => $u) {
             $opts[CURLOPT_URL] = $u;
-            $this->addQuery($opts, $id);
+            $this->add($opts, $id);
         }
-        $this->wait();
-        return is_array($url) ? $this->getResults() :  $this->getNextResult();
+        return is_array($url) ? $this->all() :  $this->next();
     }
 
     /**
@@ -147,13 +148,19 @@ class Client {
     /**
      * Add request
      * @param array $opts Options curl. Example: array( CURLOPT_URL => 'http://example.com' );
-     * @param null|string $id identity request.
-     * @param array $params All data, require binding to the request
+     * @param array|string $params All data, require binding to the request or if string: identity request
      * @return bool
      */
-    public function addQuery($opts = array(), $id = null, $params = array()) {
+    public function add($opts = array(), $params = array()) {
+        $id = null;
+
+        if (is_string($params)) {
+            $id = $params;
+            $params = array();
+        }
+
         if ( !isset( $opts[CURLOPT_FILE] ) ) {
-            $opts[CURLOPT_FILE] = @fopen($this->streamResult, 'r+');
+            $opts[CURLOPT_FILE] = fopen($this->streamResult, 'r+');
             if ( !$opts[CURLOPT_FILE] ) {
                 return false;
             }
@@ -165,8 +172,8 @@ class Client {
             }
         }
 
-        if (!isset($opts[CURLOPT_WRITEHEADER])) {
-            $opts[CURLOPT_WRITEHEADER] = @fopen(self::STREAM_MEMORY, 'r+');
+        if (!isset($opts[CURLOPT_WRITEHEADER]) && $this->enableHeaders) {
+            $opts[CURLOPT_WRITEHEADER] = fopen(self::STREAM_MEMORY, 'r+');
             if (!$opts[CURLOPT_WRITEHEADER]) {
                 return false;
             }
@@ -207,7 +214,13 @@ class Client {
         return $this;
     }
 
-
+    /**
+     * Enable headers in result. Default false
+     * @param bool $enable
+     */
+    public function enableHeaders($enable = true) {
+        $this->enableHeaders = $enable;
+    }
     /**
      * Set default curl options
      * @example: [
@@ -235,7 +248,7 @@ class Client {
 
     /**
      * @param $next int
-     * @param $sleep float microsecond
+     * @param $sleep float second
      * @param $blocking bool
      */
     public function setSleep($next, $second = 1.0, $blocking = true) {
@@ -252,12 +265,6 @@ class Client {
         return $this->queriesCount;
     }
 
-
-
-    public function hasResults() {
-        return $this->run() || !empty( $this->results );
-    }
-
     /**
      * Exec cURL resource
      * @return bool
@@ -272,34 +279,35 @@ class Client {
         return $this->processedQuery();
     }
 
-    /**
-     * Wait all request
-     * @return Client
-     */
-    public function wait() {
-        while($this->run()) {
-
-        }
-        return $this;
-    }
 
     /**
-     * Return all results
-     * @return Result[]
+     * Return all results; wait all request
+     * @return Result|null
      */
-    public function getResults() {
+    public function all() {
+        while($this->run()) {}
         $results = $this->results;
         $this->results = array();
         return $results;
     }
 
     /**
-     * Return one next result
+     * Return one next result, wait first exec request
      * @return Result|null
      */
-    public function getNextResult() {
+    public function next() {
+        while($this->run() && empty($this->results)) {}
         return array_shift( $this->results );
     }
+
+    /**
+     * Check has one result
+     * @return bool
+     */
+    public function has() {
+        return !empty($this->results);
+    }
+
 
     /**
      * Clear result request
@@ -424,7 +432,7 @@ class Result {
      * @var int $httpCode
      * @var string $body
      * @var resource $bodyStream
-     * @var stdClass|null $json
+     * @var \stdClass|null $json
      * @var array $headers
      * @var array $params
      * @var bool $hasError
@@ -478,7 +486,10 @@ class Result {
      */
     public function getOptions() {
         $opts = $this->query['opts'];
-        unset($opts[CURLOPT_WRITEHEADER], $opts[CURLOPT_FILE]);
+        unset($opts[CURLOPT_FILE]);
+        if (isset($opts[CURLOPT_WRITEHEADER])) {
+            unset($opts[CURLOPT_WRITEHEADER]);
+        }
         return $opts;
     }
     /**
@@ -504,7 +515,7 @@ class Result {
      * @return array
      */
     public function getHeaders() {
-        if (!isset($this->rawHeaders)) {
+        if (!isset($this->rawHeaders) && isset($this->query['opts'][CURLOPT_WRITEHEADER])) {
             rewind($this->query['opts'][CURLOPT_WRITEHEADER]);
             $headersRaw = stream_get_contents($this->query['opts'][CURLOPT_WRITEHEADER]);
             $headers = explode("\n", rtrim($headersRaw));
@@ -637,8 +648,16 @@ class Result {
     }
 
     public function __destruct() {
-        @fclose($this->query['opts'][CURLOPT_FILE]);
-        @fclose($this->query['opts'][CURLOPT_WRITEHEADER]);
-        @curl_close($this->query['ch']);
+        if (is_resource($this->query['opts'][CURLOPT_FILE]))  {
+            fclose($this->query['opts'][CURLOPT_FILE]);
+        }
+
+        if (isset($this->query['opts'][CURLOPT_WRITEHEADER]) && is_resource($this->query['opts'][CURLOPT_WRITEHEADER]))  {
+            fclose($this->query['opts'][CURLOPT_WRITEHEADER]);
+        }
+
+        if (is_resource($this->query['ch']))  {
+            curl_close($this->query['ch']);
+        }
     }
 }
