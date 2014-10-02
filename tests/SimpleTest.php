@@ -23,8 +23,12 @@ class SimpleTest extends CaseTest {
         $results  = $this->req->get($urls);
         $time_end = microtime(true);
 
+	$count_sleep =  intval($count/$sleep_num) - ($count%$sleep_num == 0  ? 1 : 0);
+	$script_time_sleep = $count_sleep * $sleep_time;
+	$script_time_ranning = $time_end - $time_begin;
+	
         $this->assertEquals($count, count($results));
-        $this->assertTrue(($time_end - $time_begin) >= ($count/$sleep_num*$sleep_time));
+        $this->assertTrue($script_time_ranning >= $script_time_sleep);
     }
 
 
@@ -32,6 +36,11 @@ class SimpleTest extends CaseTest {
         $result  = $this->req->get($this->url('/simple.txt'));
         $this->assertEquals('simple', $result->getBody());
         $this->assertEquals(200, $result->getHttpCode());
+    }
+
+    public function testHeaders() {
+        $this->req->enableHeaders();
+        $result  = $this->req->get($this->url('/simple.txt'));
         $this->assertNotEmpty($result->getHeaders());
         $this->assertNotEmpty($result->headers['server']);
     }
