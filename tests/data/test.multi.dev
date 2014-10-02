@@ -1,0 +1,52 @@
+server {
+	server_name test.multi.dev;
+	
+	# simple
+	location = /simple.txt {
+		echo -n "simple";
+	}
+
+	# json
+        location = /simple-json.txt {
+                echo -n '{"json_test":1}';
+        }
+
+	# asynchron
+	location ~ /simple-([0-9]+).txt$ {
+		echo -n "simple-";
+		echo -n $1;
+	}
+
+	# sleep
+	location ~ /simple-sleep-([0-9\.]+).txt$ {
+		echo_sleep $1;
+		echo -n "sleep-";
+		echo -n $1;
+	}
+
+	# error
+		location = /simple-error/404.txt {
+			return 404;
+		}
+
+		location = /simple-error/503.txt {
+                        return 503;
+                }
+
+                location = /simple-error/timeout.txt {
+			echo_sleep 5;
+			echo -n "timeout";
+                }
+
+
+	# post
+	location = /post.php {
+		echo -n $request_method;
+	}
+
+	# file
+	location = /file.php {
+		echo -n $request_body_file;
+	}
+
+}
