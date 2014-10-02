@@ -296,13 +296,8 @@ class Client {
      * @return Result|null
      */
     public function next() {
-        while($this->run() && empty($this->results)) {}
-        if (!empty($this->results)) {
-            list($key, $result) = each($this->results);
-            unset($this->results[$key]);
-            return $result;
-        }
-        return null;
+        while(empty($this->results) && $this->run()) {}
+        return array_pop($this->results);
     }
 
     /**
