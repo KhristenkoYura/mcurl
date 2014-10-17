@@ -25,10 +25,10 @@ class SimpleTest extends CaseTest {
 
 	$count_sleep =  intval($count/$sleep_num) - ($count%$sleep_num == 0  ? 1 : 0);
 	$script_time_sleep = $count_sleep * $sleep_time;
-	$script_time_ranning = $time_end - $time_begin;
+	$script_time_running = $time_end - $time_begin;
 	
         $this->assertEquals($count, count($results));
-        $this->assertTrue($script_time_ranning >= $script_time_sleep);
+        $this->assertTrue($script_time_running >= $script_time_sleep);
     }
 
 
