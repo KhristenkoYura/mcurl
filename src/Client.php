@@ -185,6 +185,7 @@ class Client {
             'params' => $params
         );
 
+
         $this->queries[] = $query;
         $this->queriesCount++;
 
@@ -383,7 +384,7 @@ class Client {
                 unset($this->queries[$key]);
 
                 $query['ch'] = curl_init();
-                curl_setopt_array( $query['ch'], $query['opts'] );
+                curl_setopt_array( $query['ch'], $this->curlOptions + $query['opts'] );
 
                 curl_multi_add_handle( $this->mh, $query['ch'] );
                 $id = $this->getResourceId( $query['ch'] );

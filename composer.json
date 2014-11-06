@@ -11,8 +11,25 @@
             "email": "khristenkoyura@gmail.com"
         }
     ],
+    "repositories" : [{
+        "type" : "package",
+        "package"  : {
+            "name"    : "libraries/phpquery",
+            "version" : "0.9.5",
+            "dist"  : {
+                "type"  : "zip",
+                "url"  : "http://phpquery.googlecode.com/files/phpQuery-0.9.5.386.zip"
+            },
+            "autoload": {
+                "classmap"  : ["phpQuery/phpQuery.php"]
+            }
+        }
+    }],
     "require": {
         "php": ">=5.3.0"
+    },
+    "require-dev": {
+        "libraries/phpquery": "*"
     },
     "autoload": {
         "psr-4": {"multiCurl\\": "src/"}
