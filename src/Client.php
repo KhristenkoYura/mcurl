@@ -96,10 +96,11 @@ class Client {
     protected $isRunMh = false;
 
     /**
+     * @example self::STREAM_MEMORY
      * @see http://php.net/manual/ru/wrappers.php
      * @var string
      */
-    protected $streamResult = self::STREAM_MEMORY;
+    protected $streamResult = null;
 
     protected $enableHeaders = false;
 
@@ -159,14 +160,14 @@ class Client {
             $params = array();
         }
 
-        if ( !isset( $opts[CURLOPT_FILE] ) ) {
+        if (isset($this->streamResult) && !isset($opts[CURLOPT_FILE])) {
             $opts[CURLOPT_FILE] = fopen($this->streamResult, 'r+');
             if ( !$opts[CURLOPT_FILE] ) {
                 return false;
             }
         }
 
-        if ( !empty($this->streamFilters ) ) {
+        if (!empty($this->streamFilters ) && isset($opts[CURLOPT_FILE])) {
             foreach ($this->streamFilters AS $filter) {
                 stream_filter_append( $opts[CURLOPT_FILE], $filter );
             }
@@ -536,8 +537,12 @@ class Result {
      * @return string
      */
     public function getBody() {
-        rewind($this->query['opts'][CURLOPT_FILE]);
-        return stream_get_contents($this->query['opts'][CURLOPT_FILE]);
+        if (isset($this->query['opts'][CURLOPT_FILE])) {
+            rewind($this->query['opts'][CURLOPT_FILE]);
+            return stream_get_contents($this->query['opts'][CURLOPT_FILE]);
+        } else {
+            return curl_multi_getcontent($this->query['ch']);
+        }
     }
 
     /**
@@ -649,7 +654,7 @@ class Result {
     }
 
     public function __destruct() {
-        if (is_resource($this->query['opts'][CURLOPT_FILE]))  {
+        if (isset($this->query['opts'][CURLOPT_FILE]) && is_resource($this->query['opts'][CURLOPT_FILE]))  {
             fclose($this->query['opts'][CURLOPT_FILE]);
         }
 
