@@ -1,5 +1,5 @@
 {
-    "name": "network/multiCurl",
+    "name": "network/multi-curl",
     "description": "Multi curl client for PHP 5.3",
     "keywords": ["curl","multi", "client"],
     "homepage": "http://github.com/khristenkoyura/multicurl",
