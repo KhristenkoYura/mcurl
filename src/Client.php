@@ -96,6 +96,12 @@ class Client {
     protected $isRunMh = false;
 
     /**
+     * Has use blocking function curl_multi_select
+     * @var bool
+     */
+    protected $isSelect = true;
+
+    /**
      * @example self::STREAM_MEMORY
      * @see http://php.net/manual/ru/wrappers.php
      * @var string
@@ -319,6 +325,14 @@ class Client {
         $this->results = array();
     }
 
+    /**
+     * @see $this->isSelect
+     * @param bool $select
+     */
+    public function isSelect($select) {
+        $this->isSelect = $select;
+    }
+
     protected function processedResponse($id) {
         $this->queriesQueueCount--;
         $this->count++;
@@ -399,7 +413,7 @@ class Client {
     protected function exec() {
         do {
             $mrc = curl_multi_exec( $this->mh, $active );
-        } while ( $mrc == CURLM_CALL_MULTI_PERFORM || curl_multi_select( $this->mh, 0.01 ) > 0 );
+        } while ( $mrc == CURLM_CALL_MULTI_PERFORM || ($this->isSelect && curl_multi_select( $this->mh, 0.01 ) > 0) );
     }
 
     protected function execRead() {
