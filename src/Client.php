@@ -56,6 +56,12 @@ class Client {
     protected $maxRequest = 10;
 
     /**
+     * Return result class
+     * @var int microsecond
+     */
+    protected $classResult = '\\multiCurl\\Result';
+
+    /**
      * Sleep script undo $this->sleepNext request
      * @var int microsecond
      */
@@ -326,6 +332,14 @@ class Client {
     }
 
     /**
+     * Set class result
+     * @return void
+     */
+    public function setClassResult($name) {
+        $this->classResult = $name;
+    }
+
+    /**
      * @see $this->isSelect
      * @param bool $select
      */
@@ -338,7 +352,7 @@ class Client {
         $this->count++;
         $query = $this->queriesQueue[$id];
 
-        $result = new Result($query);
+        $result = new $this->classResult($query);
         if (isset($query['id'])) {
             $this->results[$query['id']] = $result;
         } else {
