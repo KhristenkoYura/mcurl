@@ -29,7 +29,7 @@ echo $client->get('http://example.com');
 echo $client->get('http://example.com', [CURLOPT_REFERER => 'http://example.net/']);
 
 // post request
-echo $client->get('http://example.com', ['post-key' => 'post-value'], [CURLOPT_REFERER => 'http://example.net/']);
+echo $client->post('http://example.com', ['post-key' => 'post-value'], [CURLOPT_REFERER => 'http://example.net/']);
 
 // simple parallel request
 // @var Result[]
