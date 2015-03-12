@@ -14,7 +14,7 @@ $client = new Client();
 echo $client->get('http://example.com');
 
 // simple asynchron multi request
-$results = echo $client->get(['http://example.com', 'http://example.net']);
+$results = $client->get(['http://example.com', 'http://example.net']);
 foreach($results as $result) {
     echo $result;
 }
