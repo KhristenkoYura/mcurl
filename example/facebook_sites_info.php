@@ -46,7 +46,7 @@ all comments: 11468
 
 include __DIR__ . '/../vendor/autoload.php';
 
-use multiCurl\Client;
+use MCurl\Client;
 
 $sites = array(
     'google.com',

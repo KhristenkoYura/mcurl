@@ -1,0 +1,36 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "3d0614bfceaff81c7aa1868879699f45",
+    "packages": [],
+    "packages-dev": [
+        {
+            "name": "libraries/phpquery",
+            "version": "0.9.5",
+            "dist": {
+                "type": "zip",
+                "url": "http://phpquery.googlecode.com/files/phpQuery-0.9.5.386.zip",
+                "reference": null,
+                "shasum": null
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "phpQuery/phpQuery.php"
+                ]
+            }
+        }
+    ],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=5.3.0"
+    },
+    "platform-dev": []
+}

@@ -2,7 +2,7 @@
 
 require_once '../src/Client.php';
 
-use multiCurl\Client;
+use MCurl\Client;
 
 
 abstract class CaseTest extends PHPUnit_Framework_TestCase {

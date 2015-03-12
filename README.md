@@ -6,7 +6,7 @@ Example
 =======
 ```php
 // Create
-use multiCurl\Client;
+use MCurl\Client;
 
 $client = new Client();
 
