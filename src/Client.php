@@ -93,7 +93,12 @@ class Client {
      * @see curl_multi_init()
      * @var null
      */
-    protected $mh = null;
+    protected $mh;
+
+    /**
+     * @var curl_share_init
+     */
+    protected $sh;
 
     /**
      * has Request
@@ -252,12 +257,31 @@ class Client {
     }
 
     /**
+     * @see curl_share_setopt
+     * @link http://php.net/manual/en/function.curl-share-setopt.php
+     * @param $option
+     * @param $value
+     */
+    public function setShareOptions($option, $value) {
+        if (!isset($this->sh)) {
+            $this->sh = curl_share_init();
+            $this->setCurlOption(array(CURLOPT_SHARE => $this->sh));
+        }
+
+        curl_share_setopt($this->sh, $option, $value);
+    }
+
+    /**
      * Max request in Asynchron query
      * @param $max int default:10
      * @return void
      */
     public function setMaxRequest( $max ) {
         $this->maxRequest = $max;
+        // PHP 5 >= 5.5.0
+        if (function_exists('curl_multi_setopt')) {
+            curl_multi_setopt($this->mh, CURLMOPT_MAXCONNECTS, $max);
+        }
     }
 
     /**
