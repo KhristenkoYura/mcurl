@@ -132,7 +132,7 @@ class Client {
     }
 
     /**
-     * This Asynchron request if maxRequest > 1
+     * This parallel request if maxRequest > 1
      * $client->get('http://example.com/1.php') => return Result
      * Or $client->get('http://example.com/1.php', 'http://example.com/2.php') => return Result[]
      * Or $client->get(['http://example.com/1.php', 'http://example.com/2.php'], [CURLOPT_MAX_RECV_SPEED_LARGE => 1024]) => return Result[]
