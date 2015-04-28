@@ -1,12 +1,23 @@
-MultiCurl
+MCurl - simple, but functional wrapper for curl
 =========
-Simple library for curl multi request
+[![Version](https://img.shields.io/packagist/v/khr/php-mcurl-client.svg)](https://packagist.org/packages/khr/php-mcurl-client)
+[![License](https://img.shields.io/packagist/l/khr/php-mcurl-client.svg)](https://github.com/khr/php-mcurl-client/blob/master/LICENSE)
+### Features:
+- php 5.3 > 
+- **stable**. Using many projects
+- **fast** request. Minimal overhead
+- run a query in a single line
+- parallel request (Multi request). Default enable parallel request
+- use async request
+- **balancing requests**
+- no callable 
 
 ## Install
 
 The recommended way to install multi curl is through [composer](http://getcomposer.org).
 
-```
+    $ composer require khr/php-mcurl-client
+```json
 {
     "require": {
         "khr/php-mcurl-client": "*"
@@ -14,55 +25,99 @@ The recommended way to install multi curl is through [composer](http://getcompos
 }
 ```
 
-Example
+Quick Start and Examples
 =======
+
+### Create
 ```php
-// Create
 use MCurl\Client;
-
 $client = new Client();
+```
+### Config
 
-// simple request
+#### Client::setOptions
+This curl options add in all request
+```php
+$client->setOptions([CURLOPT_REFERER => 'http://example.net/']);
+```
+#### Client::enableHeaders
+Add headers in result
+```php
+$client->enableHeaders(); 
+```
+
+#### Client::setMaxRequest
+The maximum number of queries executed in parallel
+```php
+$client->setMaxRequest(20); // set 20 parallel request
+```
+#### Client::setSleep 
+To balance the requests in the time interval using the method **$client->setSleep**. It will help you to avoid stress (on the sending server) for receiving dynamic content by adjusting the conversion rate in the interval.
+Example:
+```php
+$client->setSleep (20, 1);
+```
+1 second will run no more than 20 queries.
+
+For static content is recommended restrictions on download speeds, that would not score channel.
+Example:
+```php
+//channel 10 Mb.
+$client->setMaxRequest (123);
+$client->setOptions([CURLOPT_MAX_RECV_SPEED_LARGE => (10 * 1024 ^ 3) / 123]);
+```
+### Simple request
+```php
 echo $client->get('http://example.com');
-
-// add curl options in request
+```
+### Add curl options in request
+```php
 echo $client->get('http://example.com', [CURLOPT_REFERER => 'http://example.net/']);
-
-// post request
+```
+### Post request
+```php
 echo $client->post('http://example.com', ['post-key' => 'post-value'], [CURLOPT_REFERER => 'http://example.net/']);
-
-// simple parallel request
-// @var Result[]
+```
+### Simple parallel request
+```php
+// @var $results Result[]
 $results = $client->get(['http://example.com', 'http://example.net']);
 foreach($results as $result) {
     echo $result;
 }
-
-// parallel request
+```
+### Parallel request
+```php 
 $urls = ['http://example.com', 'http://example.net', 'http://example.org'];
 foreach($urls as $url) {
     $client->add([CURLOPT_URL => $url]);
 }
-
 // wait all request
-// @var Result[]
+// @var $results Result[]
 $results = $client->all();
-
-// or wait next result
+```
+### Parallel request; waiting only next result
+```php
+$urls = ['http://example.com', 'http://example.net', 'http://example.org'];
+foreach($urls as $url) {
+    $client->add([CURLOPT_URL => $url]);
+}
 while($result = $client->next()) {
     echo $result;
 }
-
-// dynamic add request
+```
+### Dynamic add request
+```php
 while($result = $client->next()) {
-    $urls = fun_get_urls_for_result($result);
+    $urls = fun_get_urls_for_parse_result($result);
     foreach($urls as $url) {
         $client->add([CURLOPT_URL => $url]);
     }
     echo $result;
 }
-
-//async code
+```
+### Non-blocking request; use async code; only run request and check done
+```php
 while($client->run() || $client->has()) {
     while($client->has()) {
         // no blocking
@@ -74,35 +129,43 @@ while($client->run() || $client->has()) {
 
     //end more async code
 }
-
-//use params
-$client->add([CURLOPT_URL => $url], ['id' => 7]);
-$result = $client->next();
+```
+### Use params
+```php
+$result = $client->add([CURLOPT_URL => $url], ['id' => 7])->next();
 echo $result->params['id']; // echo 7
 
-// Result
-
+```
+### Result
+```php
 // @var $result Result
 $result->body; // string: body result
-$result->json; // or $result->getJson(true) @see json_encode
+$result->json; // object; @see json_encode
+$result->getJson(true); // array; @see json_encode
 $result->headers['content-type']; // use $client->enableHeaders();
 $result->info; // @see curl_getinfo();
+$result->info['total_time']; // 0.001
 
-$result->hasError(); // curl_error or http code >=400
-$result->getError(); // return message error
+$result->hasError(); // not empty curl_error or http code >=400
+$result->hasError('network'); // only not empty curl_error
+$result->hasError('http'); // only http code >=400
+$result->getError(); // return message error, if ->hasError();
 $result->httpCode; // return 200
+```
+### Cookbook
 
-//Config
+#### Download file
+```php
+$client->get('http://exmaple.com/image.jpg', [CURLOPT_FILE => '/tmp/image.jpg']);
+```
+#### Save memory
+To reduce memory usage, you can write the query result in a temporary file.
+```php
+$client->setStreamResult(Client::STREAM_FILE); // All Result write in tmp file.
+```
 
-$client->setMaxRequest(20); // set parallel request
-$client->setSleep(20, 1); // 20 request in 1 second
-$client->enableHeaders(); // add headers in result
-
-
-
+```php
 /**
- * more examples
- * @see tests/
+ * @see tests/ and source
  */
-
 ```
