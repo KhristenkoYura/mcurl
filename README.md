@@ -73,7 +73,10 @@ echo $client->get('http://example.com');
 ### Check error
 ```php
 $result = $client->get('http://example.com');
-echo (!$result->hasError() ? 'Ok: ' . $result : 'Error: ' .$result->error . ' ('.$result->errorCode.')'), PHP_EOL;
+echo (!$result->hasError()
+    ? 'Ok: ' . $result
+    : 'Error: ' .$result->error . ' ('.$result->errorCode.')')
+    , PHP_EOL;
 ```
 ### Add curl options in request
 ```php
