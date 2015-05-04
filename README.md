@@ -70,6 +70,11 @@ $client->setOptions([CURLOPT_MAX_RECV_SPEED_LARGE => (10 * 1024 ^ 3) / 123]);
 ```php
 echo $client->get('http://example.com');
 ```
+### Check error
+```php
+$result = $client->get('http://example.com');
+echo (!$result->hasError() ? 'Ok: ' . $result : 'Error: ' .$result->error . ' ('.$result->errorCode.')'), PHP_EOL;
+```
 ### Add curl options in request
 ```php
 echo $client->get('http://example.com', [CURLOPT_REFERER => 'http://example.net/']);
