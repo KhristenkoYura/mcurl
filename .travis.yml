@@ -8,17 +8,22 @@ php:
   - 7.0
   - hhvm
   - nightly
+  - hhvm-nightly
 
 matrix:
   fast_finish: true
   allow_failures:
     - php: 7.0
     - php: hhvm
+    - php: nightly
+    - php: hhvm-nightly
 
 env:
 - TEST_DOMAIN=localhost:8080
 
 before_script:
   - sudo ./tests/data/setup_nginx_for_travis.sh
+  - composer self-update
+  - composer install
 
 script: phpunit tests/
