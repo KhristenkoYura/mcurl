@@ -29,7 +29,6 @@ abstract class CaseTest extends PHPUnit_Framework_TestCase {
     }
 
     protected function url($path) {
-        echo 'http://' . $this->domain . $path, PHP_EOL;
         return 'http://' . $this->domain . $path;
     }
 }
