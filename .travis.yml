@@ -24,7 +24,7 @@ env:
 before_script:
   - sudo apt-get install nginx
   - sudo cp tests/data/travis_nginx.conf /etc/nginx/nginx.conf
-  - sudo nginx -s reload
+  - sudo /etc/init.d/nginx restart
   - composer self-update
   - composer install
 
