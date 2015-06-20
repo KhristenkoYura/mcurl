@@ -1,6 +1,6 @@
 <?php
 
-require_once '../src/Client.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use MCurl\Client;
 
@@ -15,6 +15,10 @@ abstract class CaseTest extends PHPUnit_Framework_TestCase {
     protected $req;
 
     public function setUp() {
+        $domain = getenv('TEST_DOMAIN');
+        if ($domain) {
+            $this->domain = $domain;
+        }
         $this->req = $this->createReq();
     }
 

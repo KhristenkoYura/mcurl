@@ -1,6 +1,6 @@
 <?php
 
-require_once 'CaseTest.php';
+require_once __DIR__ . '/CaseTest.php';
 
 
 class SimpleTest extends CaseTest {
