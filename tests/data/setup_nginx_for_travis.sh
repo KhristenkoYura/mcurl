@@ -1,4 +1,4 @@
 #!/bin/bash
 apt-get install nginx
-cp travis_nginx.conf /etc/nginx/nginx.conf
+cp tests/data/travis_nginx.conf /etc/nginx/nginx.conf-test
 /etc/init.d/nginx restart
