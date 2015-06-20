@@ -22,7 +22,9 @@ env:
 - TEST_DOMAIN=localhost
 
 before_script:
-  - sudo ./tests/data/setup_nginx_for_travis.sh
+  - sudo apt-get install nginx
+  - sudo cp tests/data/travis_nginx.conf /etc/nginx/nginx.conf
+  - sudo nginx -s reload
   - composer self-update
   - composer install
 
