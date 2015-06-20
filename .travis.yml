@@ -18,6 +18,9 @@ matrix:
     - php: nightly
     - php: hhvm-nightly
 
+env:
+- TEST_DOMAIN=localhost
+
 before_script:
   - sudo ./tests/data/setup_nginx_for_travis.sh
   - composer self-update
