@@ -8,7 +8,6 @@ php:
   - 7.0
   - hhvm
   - nightly
-  - hhvm-nightly
 
 matrix:
   fast_finish: true
@@ -16,7 +15,6 @@ matrix:
     - php: 7.0
     - php: hhvm
     - php: nightly
-    - php: hhvm-nightly
 
 env:
 - TEST_DOMAIN=localhost
