@@ -48,16 +48,16 @@ class SimpleTest extends CaseTest {
 
     public function testGetAsynchron() {
         $urls = array(
-            $this->url('/simple-sleep-3.txt'),
-            $this->url('/simple-sleep-0.txt'),
+            $this->url('/simple-sleep-4.txt'),
             $this->url('/simple-sleep-1.txt'),
             $this->url('/simple-sleep-2.txt'),
+            $this->url('/simple-sleep-3.txt'),
         );
         $time_begin = time();
         $results  = $this->req->get($urls);
         $time_end = time();
 
-        $i=0;
+        $i=1;
         foreach($results AS $result) {
             $this->assertEquals('sleep-' .$i , $result->getBody());
             $i++;
