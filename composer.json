@@ -19,6 +19,6 @@
         "psr-4": {"MCurl\\": "src/"}
     },
     "archive":{
-        "exclude":["/*", "!/src"]
+        "exclude":["*", ".*", "!/src/*"]
     }
 }
