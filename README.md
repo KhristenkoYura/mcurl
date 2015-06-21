@@ -35,39 +35,6 @@ Quick Start and Examples
 use MCurl\Client;
 $client = new Client();
 ```
-### Config
-
-#### Client::setOptions
-This curl options add in all request
-```php
-$client->setOptions([CURLOPT_REFERER => 'http://example.net/']);
-```
-#### Client::enableHeaders
-Add headers in result
-```php
-$client->enableHeaders(); 
-```
-
-#### Client::setMaxRequest
-The maximum number of queries executed in parallel
-```php
-$client->setMaxRequest(20); // set 20 parallel request
-```
-#### Client::setSleep 
-To balance the requests in the time interval using the method **$client->setSleep**. It will help you to avoid stress (on the sending server) for receiving dynamic content by adjusting the conversion rate in the interval.
-Example:
-```php
-$client->setSleep (20, 1);
-```
-1 second will run no more than 20 queries.
-
-For static content is recommended restrictions on download speeds, that would not score channel.
-Example:
-```php
-//channel 10 Mb.
-$client->setMaxRequest (123);
-$client->setOptions([CURLOPT_MAX_RECV_SPEED_LARGE => (10 * 1024 ^ 3) / 123]);
-```
 ### Simple request
 ```php
 echo $client->get('http://example.com');
@@ -162,11 +129,44 @@ $result->hasError('http'); // only http code >=400
 $result->getError(); // return message error, if ->hasError();
 $result->httpCode; // return 200
 ```
+### Config
+
+#### Client::setOptions
+This curl options add in all request
+```php
+$client->setOptions([CURLOPT_REFERER => 'http://example.net/']);
+```
+#### Client::enableHeaders
+Add headers in result
+```php
+$client->enableHeaders();
+```
+
+#### Client::setMaxRequest
+The maximum number of queries executed in parallel
+```php
+$client->setMaxRequest(20); // set 20 parallel request
+```
+#### Client::setSleep
+To balance the requests in the time interval using the method **$client->setSleep**. It will help you to avoid stress (on the sending server) for receiving dynamic content by adjusting the conversion rate in the interval.
+Example:
+```php
+$client->setSleep (20, 1);
+```
+1 second will run no more than 20 queries.
+
+For static content is recommended restrictions on download speeds, that would not score channel.
+Example:
+```php
+//channel 10 Mb.
+$client->setMaxRequest (123);
+$client->setOptions([CURLOPT_MAX_RECV_SPEED_LARGE => (10 * 1024 ^ 3) / 123]);
+```
 ### Cookbook
 
 #### Download file
 ```php
-$client->get('http://exmaple.com/image.jpg', [CURLOPT_FILE => '/tmp/image.jpg']);
+$client->get('http://exmaple.com/image.jpg', [CURLOPT_FILE => fopen('/tmp/image.jpg', 'w')]);
 ```
 #### Save memory
 To reduce memory usage, you can write the query result in a temporary file.
