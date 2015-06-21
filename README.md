@@ -1,6 +1,6 @@
 MCurl - simple, but functional wrapper for curl
 =========
-[![Build](https://img.shields.io/travis/KhristenkoYura/mcurl.svg)](https://travis-ci.org/KhristenkoYura/mcurl)
+[![Build](https://travis-ci.org/KhristenkoYura/mcurl.svg)](https://travis-ci.org/KhristenkoYura/mcurl)
 [![Version](https://img.shields.io/packagist/v/khr/php-mcurl-client.svg)](https://packagist.org/packages/khr/php-mcurl-client)
 [![License](https://img.shields.io/packagist/l/khr/php-mcurl-client.svg)](https://github.com/khr/php-mcurl-client/blob/master/LICENSE)
 [![Downloads](https://img.shields.io/packagist/dt/khr/php-mcurl-client.svg)](https://packagist.org/packages/khr/php-mcurl-client)
