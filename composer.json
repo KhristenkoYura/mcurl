@@ -18,6 +18,9 @@
     "autoload": {
         "psr-4": {"MCurl\\": "src/"}
     },
+    "config":{
+        "preferred-install": "dist"
+    },
     "archive":{
         "exclude":["*", ".*", "!/src/*"]
     }
