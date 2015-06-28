@@ -5,7 +5,7 @@ MCurl - simple, but functional wrapper for curl
 [![License](https://img.shields.io/packagist/l/khr/php-mcurl-client.svg)](https://github.com/KhristenkoYura/mcurl/blob/master/LICENSE)
 [![Downloads](https://img.shields.io/packagist/dt/khr/php-mcurl-client.svg)](https://packagist.org/packages/khr/php-mcurl-client)
 ### Features:
-- php 5.3 >= 
+- PHP >= 5.3 (compatible up to version 7.0 && hhvm)
 - **stable**. Using many projects
 - **fast** request. Minimal overhead
 - run a query in a single line
