@@ -18,11 +18,11 @@ MCurl - simple, but functional wrapper for curl
 
 The recommended way to install multi curl is through [composer](http://getcomposer.org).
 
-    $ composer require khr/php-mcurl-client
+    $ composer require khr/php-mcurl-client:3.*
 ```json
 {
     "require": {
-        "khr/php-mcurl-client": "*"
+        "khr/php-mcurl-client": "~3.0"
     }
 }
 ```
