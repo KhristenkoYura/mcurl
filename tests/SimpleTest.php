@@ -27,7 +27,7 @@ class SimpleTest extends CaseTest {
         $script_time_sleep = $count_sleep * $sleep_time;
 
         $script_time_running = $time_end - $time_begin;
-	
+
         $this->assertEquals($count, count($results));
         $this->assertTrue($script_time_running >= $script_time_sleep);
     }
@@ -35,6 +35,14 @@ class SimpleTest extends CaseTest {
 
     public function testGet() {
         $result  = $this->req->get($this->url('/simple.txt'));
+        $this->assertEquals('simple', $result->getBody());
+        $this->assertEquals(200, $result->getHttpCode());
+    }
+
+    public function testGetWithBaseUrl() {
+        $this->req->setBaseUrl('http://' . $this->domain);
+
+        $result = $this->req->get('/simple.txt');
         $this->assertEquals('simple', $result->getBody());
         $this->assertEquals(200, $result->getHttpCode());
     }
@@ -93,6 +101,13 @@ class SimpleTest extends CaseTest {
 
     public function testPost() {
         $result  = $this->req->post($this->url('/post.php'), array('data' => 'post data'));
+        $this->assertEquals('POST', (string) $result);
+    }
+
+    public function testPostWithBaseUrl() {
+        $this->req->setBaseUrl('http://' . $this->domain);
+
+        $result = $this->req->post('/post.php', array('data' => 'post data'));
         $this->assertEquals('POST', (string) $result);
     }
 

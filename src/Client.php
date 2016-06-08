@@ -127,6 +127,11 @@ class Client {
      */
     protected $streamFilters = array();
 
+    /**
+     * @var string
+     */
+    protected $baseUrl;
+
     public function __construct() {
         $this->mh = curl_multi_init();
     }
@@ -175,6 +180,10 @@ class Client {
         if (is_string($params)) {
             $id = $params;
             $params = array();
+        }
+
+        if (isset($this->baseUrl, $opts[CURLOPT_URL])) {
+            $opts[CURLOPT_URL] = $this->baseUrl . $opts[CURLOPT_URL];
         }
 
         if (isset($this->streamResult) && !isset($opts[CURLOPT_FILE])) {
@@ -473,5 +482,13 @@ class Client {
             curl_share_close($this->sh);
         }
         curl_multi_close( $this->mh );
+    }
+
+    /**
+     * @param string $baseUrl
+     */
+    public function setBaseUrl($baseUrl)
+    {
+        $this->baseUrl = $baseUrl;
     }
 }
